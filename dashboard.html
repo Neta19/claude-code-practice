@@ -135,7 +135,14 @@
 
   /* table */
   .table-card{background:var(--surface); border:2px solid var(--blue); border-radius:var(--radius); box-shadow:var(--shadow); overflow:hidden;}
-  .table-head{padding:16px 18px 4px; display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .table-head{padding:16px 18px 4px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;}
+  .table-head-actions{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .csv-btn{
+    display:flex; align-items:center; gap:7px; font:inherit; font-family:"Heebo",sans-serif; font-weight:600; font-size:13px;
+    color:#fff; background:var(--blue); border:none; border-radius:9px; padding:8px 13px; cursor:pointer;
+  }
+  .csv-btn:hover{background:#1d4ed8;}
+  .csv-btn:focus-visible{outline:2px solid var(--blue); outline-offset:2px;}
   .table-scroll{overflow-x:auto; padding:0 4px 4px;}
   table{width:100%; border-collapse:collapse; font-size:13.5px; min-width:720px;}
   thead th{
@@ -220,7 +227,13 @@
   <div class="table-card">
     <div class="table-head">
       <h2 style="font-size:16px;">טבלה חודשית מרכזת</h2>
-      <span class="card-note">לחצי על שורה כדי להתמקד בחודש</span>
+      <div class="table-head-actions">
+        <span class="card-note">לחצי על שורה כדי להתמקד בחודש</span>
+        <button id="csv-btn" class="csv-btn" hidden type="button">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12"/><path d="M6.5 10.5 12 16l5.5-5.5"/><path d="M4 20h16"/></svg>
+          <span>הורד כ-CSV</span>
+        </button>
+      </div>
     </div>
     <div class="table-scroll">
       <table>
@@ -703,5 +716,33 @@
 
   sel.value = "all";
   render();
+
+  /* ---------- CSV export (downloads capability) ---------- */
+  function buildCSV(){
+    const headers = ["חודש","סה\"כ לקוחות","לקוחות חדשים","לקוחות ממשיכים","טיפולים שבוצעו","ביטולים","הכנסה (₪)"];
+    const esc = v => {
+      const s = String(v);
+      return /[",\r\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+    };
+    const rows = DATA.map(d => [d.label, d.totalClients, d.newC, d.contC, d.treatments, d.cancels, d.revenue]);
+    return [headers, ...rows].map(r => r.map(esc).join(",")).join("\r\n");
+  }
+
+  async function initCsvDownload(){
+    const btn = document.getElementById("csv-btn");
+    if(!window.claude || typeof window.claude.use !== "function") return;
+    let downloads = null;
+    try{ downloads = await window.claude.use("downloads"); }catch(e){ downloads = null; }
+    if(!downloads) return; // capability unavailable in this view — keep the button hidden
+    btn.hidden = false;
+    btn.addEventListener("click", async ()=>{
+      try{
+        await downloads.save({ filename: "טבלה_חודשית.csv", data: buildCSV() });
+      }catch(err){
+        // viewer declined, rate-limited, etc. — nothing to do
+      }
+    });
+  }
+  initCsvDownload();
 })();
 </script>
