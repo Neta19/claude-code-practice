@@ -22,13 +22,20 @@ jobs:
         run: |
           curl -sSf -H "Authorization: Bearer $AIRTABLE_TOKEN" \
             "https://api.airtable.com/v0/$BASE_ID/$TABLE_ID?pageSize=100" -o airtable.json
-          jq '[.records[] | {
+          jq '
+            def month_index:
+              . as $l
+              | (["ינו","פבר","מרץ","אפר","מאי","יוני","יולי","אוג","ספט","אוק","נוב","דצמ"]
+                 | to_entries | map(select($l | startswith(.value))) | .[0].key) // 99;
+            [.records[] | {
                 label: .fields["חודש"],
                 newC: (.fields["לקוחות חדשים"] // 0),
                 contC: (.fields["לקוחות ממשיכים"] // 0),
                 treatments: (.fields["טיפולים שבוצעו"] // 0),
                 cancels: (.fields["ביטולים"] // 0)
-              }]' airtable.json > data.new.json
+              }]
+            | sort_by([(.label | split(" ")[1] | tonumber? // 0), (.label | month_index)])
+          ' airtable.json > data.new.json
           test "$(jq 'length' data.new.json)" -gt 0
           mv data.new.json data.json
           rm -f airtable.json
