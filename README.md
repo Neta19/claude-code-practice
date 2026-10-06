@@ -26,6 +26,11 @@
 מתוך הנתונים הגולמיים ב-JavaScript (`dashboard.html`), כולל הנוסחה
 הכנסה חודשית = מספר הטיפולים שבוצעו × 350 ₪.
 
+## הגדרות מקומיות (.env)
+
+להרצה מקומית מול Airtable, העתיקו את [`.env.example`](.env.example) ל-`.env` ומלאו את `AIRTABLE_TOKEN`.
+הקובץ `.env` מוחרג ב-`.gitignore` ולעולם לא נדחף ל-GitHub (ה-repo ציבורי). ב-GitHub Actions ה-token נשמר כ-secret בשם `AIRTABLE_TOKEN`.
+
 ## עדכון הנתונים
 
 כדי לעדכן את הנתונים, ערכו את מערך `RAW` בתוך `dashboard.html` (חיפוש לפי
