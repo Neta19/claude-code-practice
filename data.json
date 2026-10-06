@@ -7,18 +7,11 @@
     "cancels": 2
   },
   {
-    "label": "יוני 2026",
+    "label": "נוב' 2025",
     "newC": 6,
-    "contC": 32,
-    "treatments": 66,
-    "cancels": 6
-  },
-  {
-    "label": "מאי 2026",
-    "newC": 7,
-    "contC": 30,
-    "treatments": 63,
-    "cancels": 5
+    "contC": 13,
+    "treatments": 34,
+    "cancels": 4
   },
   {
     "label": "דצמ' 2025",
@@ -28,11 +21,11 @@
     "cancels": 3
   },
   {
-    "label": "מרץ 2026",
-    "newC": 6,
-    "contC": 27,
-    "treatments": 58,
-    "cancels": 6
+    "label": "ינו' 2026",
+    "newC": 8,
+    "contC": 19,
+    "treatments": 47,
+    "cancels": 5
   },
   {
     "label": "פבר' 2026",
@@ -42,6 +35,13 @@
     "cancels": 4
   },
   {
+    "label": "מרץ 2026",
+    "newC": 6,
+    "contC": 27,
+    "treatments": 58,
+    "cancels": 6
+  },
+  {
     "label": "אפר' 2026",
     "newC": 5,
     "contC": 29,
@@ -49,25 +49,18 @@
     "cancels": 5
   },
   {
-    "label": "נוב' 2025",
-    "newC": 6,
-    "contC": 13,
-    "treatments": 34,
-    "cancels": 4
-  },
-  {
-    "label": "ינו' 2026",
-    "newC": 8,
-    "contC": 19,
-    "treatments": 47,
+    "label": "מאי 2026",
+    "newC": 7,
+    "contC": 30,
+    "treatments": 63,
     "cancels": 5
   },
   {
-    "label": "אוג' 2026",
-    "newC": 2,
-    "contC": 25,
-    "treatments": 40,
-    "cancels": 7
+    "label": "יוני 2026",
+    "newC": 6,
+    "contC": 32,
+    "treatments": 66,
+    "cancels": 6
   },
   {
     "label": "יולי 2026",
@@ -75,6 +68,13 @@
     "contC": 28,
     "treatments": 48,
     "cancels": 8
+  },
+  {
+    "label": "אוג' 2026",
+    "newC": 2,
+    "contC": 25,
+    "treatments": 40,
+    "cancels": 7
   },
   {
     "label": "ספט' 2026",
