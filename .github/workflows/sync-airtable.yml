@@ -1,0 +1,46 @@
+name: Sync Airtable data
+
+on:
+  schedule:
+    - cron: "0 5 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fetch records from Airtable into data.json
+        env:
+          AIRTABLE_TOKEN: ${{ secrets.AIRTABLE_TOKEN }}
+          BASE_ID: appdk6nsqQ8mpOenX
+          TABLE_ID: tblzbTe0LReBglpWW
+        run: |
+          curl -sSf -H "Authorization: Bearer $AIRTABLE_TOKEN" \
+            "https://api.airtable.com/v0/$BASE_ID/$TABLE_ID?pageSize=100" -o airtable.json
+          jq '[.records[] | {
+                label: .fields["חודש"],
+                newC: (.fields["לקוחות חדשים"] // 0),
+                contC: (.fields["לקוחות ממשיכים"] // 0),
+                treatments: (.fields["טיפולים שבוצעו"] // 0),
+                cancels: (.fields["ביטולים"] // 0)
+              }]' airtable.json > data.new.json
+          test "$(jq 'length' data.new.json)" -gt 0
+          mv data.new.json data.json
+          rm -f airtable.json
+
+      - name: Commit and push if data changed
+        run: |
+          if git diff --quiet data.json; then
+            echo "No changes in Airtable data."
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data.json
+            git commit -m "Sync data.json from Airtable"
+            git push
+          fi

@@ -31,9 +31,16 @@
 להרצה מקומית מול Airtable, העתיקו את [`.env.example`](.env.example) ל-`.env` ומלאו את `AIRTABLE_TOKEN`.
 הקובץ `.env` מוחרג ב-`.gitignore` ולעולם לא נדחף ל-GitHub (ה-repo ציבורי). ב-GitHub Actions ה-token נשמר כ-secret בשם `AIRTABLE_TOKEN`.
 
+## סנכרון אוטומטי מ-Airtable
+
+הנתונים נטענים ע"י `dashboard.html` מהקובץ [`data.json`](data.json) (ואם הוא לא זמין, מגיבוי מוטמע בקוד).
+ה-workflow [`.github/workflows/sync-airtable.yml`](.github/workflows/sync-airtable.yml) מושך את הרשומות מטבלת ה-Airtable
+בכל יום ב-05:00 UTC (וגם ידנית: Actions ← Sync Airtable data ← Run workflow), בונה מחדש את `data.json` ודוחף אותו אם משהו השתנה.
+ה-token נשמר כ-secret בשם `AIRTABLE_TOKEN` (הרשאת קריאה בלבד) ואינו מופיע בקוד.
+לכן, שינוי בטבלת Airtable יופיע בדשבורד אחרי הסנכרון הבא; להפעלה מיידית — הרצה ידנית של ה-workflow.
+
 ## עדכון הנתונים
 
-כדי לעדכן את הנתונים, ערכו את מערך `RAW` בתוך `dashboard.html` (חיפוש לפי
-`const RAW = [`) — כל שאר הדשבורד (KPIs, גרפים, טבלה) יתעדכן אוטומטית.
-אם משנים את הנתונים, כדאי לעדכן בהתאם גם את [`טבלה_חודשית.csv`](טבלה_חודשית.csv) ואת
-[טבלת ה-Airtable](https://airtable.com/appdk6nsqQ8mpOenX) כדי שיישארו תואמים.
+עורכים את הנתונים ישירות ב-[טבלת ה-Airtable](https://airtable.com/appdk6nsqQ8mpOenX) — השינוי יגיע לדשבורד
+דרך הסנכרון האוטומטי (`data.json`). כל השאר (KPIs, גרפים, טבלה, הכנסה) מחושב אוטומטית.
+הקובץ [`טבלה_חודשית.csv`](טבלה_חודשית.csv) הוא ייצוא חד-פעמי ואינו מתעדכן אוטומטית.

@@ -259,12 +259,12 @@
 <div id="tooltip" role="tooltip"></div>
 
 <script>
-(function(){
+(async function(){
   "use strict";
   const PRICE = 350;
 
-  /* raw monthly inputs — the only hand-authored numbers; everything else below is derived */
-  const RAW = [
+  /* embedded snapshot — used only when data.json can't be fetched (e.g. file opened locally) */
+  const FALLBACK_RAW = [
     { m:"אוק׳", y:"2025", newC:4, contC:10, treatments:22, cancels:3 },
     { m:"נוב׳", y:"2025", newC:6, contC:13, treatments:34, cancels:4 },
     { m:"דצמ׳", y:"2025", newC:5, contC:17, treatments:38, cancels:3 },
@@ -279,12 +279,29 @@
     { m:"ספט׳", y:"2026", newC:6, contC:24, treatments:51, cancels:5 },
   ];
 
-  const DATA = RAW.map(r => ({
-    ...r,
-    label: r.m + " " + r.y,
-    totalClients: r.newC + r.contC,
-    revenue: r.treatments * PRICE,
-  }));
+  /* raw monthly inputs come from data.json (synced from Airtable); everything else is derived */
+  let RAW = FALLBACK_RAW;
+  try{
+    const res = await fetch("data.json", { cache:"no-store" });
+    if(res.ok){
+      const live = await res.json();
+      if(Array.isArray(live) && live.length) RAW = live;
+    }
+  }catch(e){ /* keep embedded snapshot */ }
+
+  const num = v => Number(v) || 0;
+  const DATA = RAW.map(r => {
+    const parts = String(r.label || (r.m + " " + r.y)).trim().split(/\s+/);
+    const m = (r.m || parts[0] || "").replace("'", "׳");
+    const y = r.y || parts.slice(1).join(" ");
+    const newC = num(r.newC), contC = num(r.contC), treatments = num(r.treatments), cancels = num(r.cancels);
+    return {
+      m, y, newC, contC, treatments, cancels,
+      label: (m + " " + y).trim(),
+      totalClients: newC + contC,
+      revenue: treatments * PRICE,
+    };
+  });
 
   const N = DATA.length;
   const fmtInt = n => new Intl.NumberFormat("he-IL").format(Math.round(n));
