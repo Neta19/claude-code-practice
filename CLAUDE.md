@@ -1,6 +1,6 @@
 # Clinic Dashboard Project
 
-An interactive RTL Hebrew dashboard (`dashboard.html`) summarizing a year of
+An interactive RTL Hebrew dashboard (`index.html`) summarizing a year of
 activity for an emotional-therapy clinic — KPIs, charts, and a monthly table.
 See `spec.md` for the full specification and `README.md` for project docs.
 
