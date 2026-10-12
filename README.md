@@ -34,6 +34,7 @@
 ## סנכרון אוטומטי מ-Airtable
 
 הנתונים נטענים ע"י `index.html` מהקובץ [`data.json`](data.json) (ואם הוא לא זמין, מגיבוי מוטמע בקוד).
+שימו לב: כשפותחים את `index.html` ישירות מהדיסק (`file://`) הדפדפן חוסם את טעינת `data.json`, ולכן מוצג הגיבוי המוטמע (`FALLBACK_RAW`) ולא המידע העדכני מ-Airtable. הגיבוי לא מתעדכן אוטומטית, ויש לסנכרן אותו ידנית עם `data.json`. לצפייה בנתונים החיים יש להשתמש באתר ב-GitHub Pages.
 ה-workflow [`.github/workflows/sync-airtable.yml`](.github/workflows/sync-airtable.yml) מושך את הרשומות מטבלת ה-Airtable
 בכל יום ב-05:00 UTC (וגם ידנית: Actions ← Sync Airtable data ← Run workflow), בונה מחדש את `data.json` ודוחף אותו אם משהו השתנה.
 ה-token נשמר כ-secret בשם `AIRTABLE_TOKEN` (הרשאת קריאה בלבד) ואינו מופיע בקוד.
