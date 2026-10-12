@@ -43,15 +43,20 @@ jobs:
           test "$(jq 'length' data.new.json)" -gt 0
           mv data.new.json data.json
           rm -f airtable.json
+          jq -r '
+            ["חודש","סה\"כ לקוחות","לקוחות חדשים","לקוחות ממשיכים","טיפולים שבוצעו","ביטולים","הכנסה (₪)"],
+            (.[] | [.label, (.newC + .contC), .newC, .contC, .treatments, .cancels, (.treatments * 350)])
+            | @csv
+          ' data.json > "טבלה_חודשית.csv"
 
       - name: Commit and push if data changed
         run: |
-          if git diff --quiet data.json; then
+          if git diff --quiet data.json "טבלה_חודשית.csv"; then
             echo "No changes in Airtable data."
           else
             git config user.name "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add data.json
+            git add data.json "טבלה_חודשית.csv"
             git commit -m "Sync data.json from Airtable"
             git push
           fi
